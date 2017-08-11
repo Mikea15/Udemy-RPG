@@ -1,11 +1,13 @@
 ﻿using UnityEditor;
+using UnityEngine;
 
-
-// TODO consider changing to a property drawer
+// TODO: consider changing to a property drawer
 [CustomEditor(typeof(CameraRaycaster))]
 public class CameraRaycasterEditor : Editor
 {
     bool isLayerPrioritiesUnfolded = true; // store the UI state
+
+
 
     public override void OnInspectorGUI()
     {
@@ -19,6 +21,7 @@ public class CameraRaycasterEditor : Editor
                 BindArraySize();
                 BindArrayElements();
             }
+
             EditorGUI.indentLevel--;
         }
 

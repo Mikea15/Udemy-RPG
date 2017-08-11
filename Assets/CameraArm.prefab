@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   layerPriorities: 0900000008000000
+  string2: banana
 --- !u!114 &114637938769699604
 MonoBehaviour:
   m_ObjectHideFlags: 1

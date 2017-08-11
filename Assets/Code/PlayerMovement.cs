@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using UnityEditor.AI;
 using UnityStandardAssets.Characters.ThirdPerson;
+
 
 [RequireComponent(typeof(ThirdPersonCharacter))]
 public class PlayerMovement : MonoBehaviour
@@ -8,20 +10,53 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float m_walkMoveStopRadius = 0.2f;
     [SerializeField] private float m_attackMoveStopRadius = 5f;
 
+    [SerializeField] const int walkableLayerNumber = 8;
+    [SerializeField] const int enemyLayerNumber = 9;
+    [SerializeField] const int unknownLayerNumber = 10;
+
 
     ThirdPersonCharacter m_character;   // A reference to the ThirdPersonCharacter on the object
     CameraRaycaster m_cameraRaycaster;
     Vector3 m_currentDestination;
 
+    AICharacterControl m_aiCharacterControl = null;
+
     private bool m_isInDirectMode = false;
 
     private Vector3 m_clickLocation;
 
+    GameObject walkTarget = null;
+
     private void Start()
     {
         m_cameraRaycaster = Camera.main.GetComponent<CameraRaycaster>();
+        m_cameraRaycaster.notifyMouseClickObservers += CameraRaycasterMouseClickObservers;
         m_character = GetComponent<ThirdPersonCharacter>();
         m_currentDestination = transform.position;
+
+        m_aiCharacterControl = this.GetComponent<AICharacterControl>();
+
+        walkTarget = new GameObject("Walk Target");
+    }
+
+    private void CameraRaycasterMouseClickObservers(RaycastHit raycastHit, int layerHit)
+    {
+        switch( layerHit )
+        {
+            case enemyLayerNumber:
+                m_aiCharacterControl.SetTarget(raycastHit.collider.gameObject.transform);
+                break;
+
+            case walkableLayerNumber:
+                walkTarget.transform.position = raycastHit.point;
+                m_aiCharacterControl.SetTarget(walkTarget.transform);
+                break;
+
+            case unknownLayerNumber:
+            default:
+                m_aiCharacterControl.SetTarget(this.transform);
+                break;
+        }
     }
 
     private void ProcessDirectMovement( )
@@ -36,58 +71,5 @@ public class PlayerMovement : MonoBehaviour
         m_character.Move(move, false, false);
     }
 
-    //private void ProcessMouseMovement()
-    //{
-    //    if (Input.GetMouseButton(0))
-    //    {
-    //        m_clickLocation = m_cameraRaycaster.hit.point;
-    //        switch (m_cameraRaycaster.layerHit)
-    //        {
-    //            case Layer.Walkable:
-    //                m_currentDestination = ShortDestination(m_clickLocation, m_walkMoveStopRadius);
-    //                break;
-    //            case Layer.Enemy:
-    //                Debug.Log("Not moving to enemy");
-    //                m_currentDestination = ShortDestination(m_clickLocation, m_attackMoveStopRadius);
-    //                break;
-    //            default:
-    //                Debug.Log("Unexpected layer found");
-    //                break;
-    //        }
-    //    }
-
-    //    WalkToDestination();
-    //}
-
-    private void WalkToDestination()
-    {
-        Vector3 dir = m_currentDestination - transform.position;
-        if (dir.sqrMagnitude >= 0)
-        {
-            m_character.Move(dir, false, false);
-        }
-        else
-        {
-            m_character.Move(Vector3.zero, false, false);
-        }
-    }
-
-    Vector3 ShortDestination( Vector3 destination, float shorteningFactor )
-    {
-        Vector3 reducedVector = (destination - this.transform.position).normalized * shorteningFactor;
-        return destination - reducedVector;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.black;
-        Gizmos.DrawLine(this.transform.position, m_clickLocation);
-
-        Gizmos.DrawSphere(m_currentDestination, 0.1f);
-        Gizmos.DrawSphere(m_clickLocation, 0.15f);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(this.transform.position, m_attackMoveStopRadius);
-    }
 }
 
