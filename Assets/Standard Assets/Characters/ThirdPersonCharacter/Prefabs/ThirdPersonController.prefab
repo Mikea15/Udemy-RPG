@@ -660,6 +660,7 @@ GameObject:
   - component: {fileID: 11444856}
   - component: {fileID: 11469404}
   - component: {fileID: 114690217379718172}
+  - component: {fileID: 114851515516232780}
   m_Layer: 0
   m_Name: ThirdPersonController
   m_TagString: Player
@@ -2719,3 +2720,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_walkMoveStopRadius: 0.2
+  m_attackMoveStopRadius: 5
+--- !u!114 &114851515516232780
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 359ab0a60daaa6241a6a978ffb2940c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_maxHealthPoints: 100

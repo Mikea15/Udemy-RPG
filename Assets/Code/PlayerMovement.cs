@@ -24,26 +24,6 @@ public class PlayerMovement : MonoBehaviour
         m_currentDestination = transform.position;
     }
 
-    // Fixed update is called in sync with physics
-    private void FixedUpdate()
-    {
-        if( Input.GetKeyDown(KeyCode.G))
-        {
-            m_isInDirectMode = !m_isInDirectMode;
-            m_currentDestination = this.transform.position;
-        }
-
-
-        if (m_isInDirectMode)
-        {
-            ProcessDirectMovement();
-        }
-        else
-        {
-            ProcessMouseMovement();
-        }
-    }
-
     private void ProcessDirectMovement( )
     {
         // read inputs
@@ -56,28 +36,28 @@ public class PlayerMovement : MonoBehaviour
         m_character.Move(move, false, false);
     }
 
-    private void ProcessMouseMovement()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            m_clickLocation = m_cameraRaycaster.hit.point;
-            switch (m_cameraRaycaster.layerHit)
-            {
-                case Layer.Walkable:
-                    m_currentDestination = ShortDestination(m_clickLocation, m_walkMoveStopRadius);
-                    break;
-                case Layer.Enemy:
-                    Debug.Log("Not moving to enemy");
-                    m_currentDestination = ShortDestination(m_clickLocation, m_attackMoveStopRadius);
-                    break;
-                default:
-                    Debug.Log("Unexpected layer found");
-                    break;
-            }
-        }
+    //private void ProcessMouseMovement()
+    //{
+    //    if (Input.GetMouseButton(0))
+    //    {
+    //        m_clickLocation = m_cameraRaycaster.hit.point;
+    //        switch (m_cameraRaycaster.layerHit)
+    //        {
+    //            case Layer.Walkable:
+    //                m_currentDestination = ShortDestination(m_clickLocation, m_walkMoveStopRadius);
+    //                break;
+    //            case Layer.Enemy:
+    //                Debug.Log("Not moving to enemy");
+    //                m_currentDestination = ShortDestination(m_clickLocation, m_attackMoveStopRadius);
+    //                break;
+    //            default:
+    //                Debug.Log("Unexpected layer found");
+    //                break;
+    //        }
+    //    }
 
-        WalkToDestination();
-    }
+    //    WalkToDestination();
+    //}
 
     private void WalkToDestination()
     {
